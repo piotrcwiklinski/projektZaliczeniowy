@@ -6,6 +6,7 @@ public class Player {
     String name;
     Boolean alive;
     Integer cash;
+    String activeProject;
 
     Player(String name) {
         this.name = name;
@@ -96,7 +97,8 @@ public class Player {
                         break;
 
                     case "4":
-                        System.out.println("Placeholder");
+                        System.out.println("\n\tLISTA DOSTĘPNYCH PROJEKTÓW DO REALIZACJI:");
+                        Project.printActiveProjects();
                         break;
 
                     case "5":
@@ -123,4 +125,6 @@ public class Player {
         }
 
     }
+
+
 }

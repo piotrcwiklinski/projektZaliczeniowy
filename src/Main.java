@@ -22,12 +22,13 @@ public class Main {
 
         //System Objects
         Scanner in = new Scanner(System.in);
-        Random rand = new Random();
 
-        //System Var's
+        //Przygotowanie nowej rozgrywki
+
         boolean gameRunning = true;
         final LocalDate startDate = LocalDate.parse("2020-01-01");
         LocalDate currentDate = startDate;
+        Project.generateStartProjects(1);
 
         //Początek rozgrywki
 
@@ -52,6 +53,7 @@ public class Main {
         }
 
         System.out.println("\nWszyscy gracze na pokładzie. Zaczynamy rozgrywkę!");
+
 
         //Główna pętla gry
 
