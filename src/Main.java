@@ -1,4 +1,3 @@
-import java.util.Random;
 import java.util.Scanner;
 import java.time.LocalDate;
 
@@ -71,7 +70,8 @@ public class Main {
 
             if (winChecker > 0) {
                 currentDate = currentDate.plusDays(1);
-                System.out.println(">Upłynął kolejny dzień. Dzisiaj mamy " + currentDate + ".");
+                System.out.println("\n----------------------------------------------------------------------------------" +
+                        "\n>Upłynął kolejny dzień. Dzisiaj mamy " + currentDate + ".");
 
 
             } else {

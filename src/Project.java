@@ -2,6 +2,7 @@ import java.util.Random;
 
 public class Project {
 
+    public Integer projectID;
     public String projectname;
     public Integer frontEndDays;
     public Integer backEndDays;
@@ -16,6 +17,7 @@ public class Project {
     public Integer paymentDays;
     public Integer complexityLvl;
     public boolean taken;
+    public String owner;
 
     static Random rand = new Random();
 
@@ -32,7 +34,7 @@ public class Project {
     public Integer wordpressDaysMAX = 7;
     public Integer prestaShopDaysMAX = 7;
     public String[] clients = {"Wyluzowany", "Wymagający", "SKRWL"};
-    public Integer deadlineDaysMAX = 60;
+    public Integer deadlineDaysMAX = 42;
     public Integer deadlinePenaltyPercentMAX = 50;
     public Integer priceMax = 200000;
     public Integer paymentDaysMAX = 60;
@@ -82,11 +84,13 @@ public class Project {
 
         for (int i = 0; i < 3; i++) {
             projects[i] = new Project(complexityLvl);
+            projects[i].projectID = i;
         }
     }
 
     public String toString() {
         return "----------------------------------------------------------------------------------\n" +
+                "ID Ogłoszenia: (" + projectID + ");\n" +
                 "Nazwa Projektu: " + projectname + ";\n" +
                 "Ilość dni na realizację: " + deadlineDays + ";\n" +
                 "Kara za opóźnienie (% faktury): " + deadlinePenalty + "%;\n" +

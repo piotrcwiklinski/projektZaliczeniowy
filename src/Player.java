@@ -55,6 +55,23 @@ public class Player {
 
                         switch (input) {
                             case "1":
+                                System.out.println("\n\tLISTA DOSTĘPNYCH PROJEKTÓW DO REALIZACJI:");
+                                Project.printActiveProjects();
+                                System.out.println("\n\tKTÓRY PROJEKT WYBIERASZ? (Podaj ID Ogłoszenia lub \"stop\" by wrócić do Menu)");
+
+                                input = in.nextLine();
+
+                                if(Main.isNumeric(input)){
+                                    try {
+                                        Project.projects[Integer.parseInt(input)].owner = this.name;
+                                        Project.projects[Integer.parseInt(input)].taken = true;
+                                        System.out.println("Udało się pozyskać projekt nr. " + Integer.parseInt(input) + " do realizacji!");
+                                        actionChosen = true;
+                                    } catch (Exception exc)
+                                    {
+                                        System.out.println("Nie ma takiego projektu! Spróbuj ponownie");
+                                    }
+                                } else if(input.equals("stop")) continue Menu;
                                 break;
 
                             case "2":
