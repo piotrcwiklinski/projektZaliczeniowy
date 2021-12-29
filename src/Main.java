@@ -16,18 +16,17 @@ public class Main {
         return true;
     }
 
+    //Obiekty Systemowe
+    static Scanner in = new Scanner(System.in);
+
+    //Przygotowanie zasobów nowej rozgrywki
+
+    public static boolean gameRunning = true;
+    final static LocalDate startDate = LocalDate.parse("2020-01-01");
+    public static LocalDate currentDate = startDate;
+
 
     public static void main(String[] args) {
-
-        //System Objects
-        Scanner in = new Scanner(System.in);
-
-        //Przygotowanie nowej rozgrywki
-
-        boolean gameRunning = true;
-        final LocalDate startDate = LocalDate.parse("2020-01-01");
-        LocalDate currentDate = startDate;
-        Project.generateStartProjects(1);
 
         //Początek rozgrywki
 
@@ -53,6 +52,7 @@ public class Main {
 
         System.out.println("\nWszyscy gracze na pokładzie. Zaczynamy rozgrywkę!");
 
+        Project.generateStartProjects(1);
 
         //Główna pętla gry
 
@@ -62,25 +62,28 @@ public class Main {
                 player.doTurn();
             }
 
-            Integer winChecker = 0;
+            Integer aliveChecker = 0;
             for (Player player : players)
                 if (player.alive) {
-                    winChecker++;
+                    aliveChecker++;
                 }
 
-            if (winChecker > 0) {
+            if (aliveChecker > 0) {
                 currentDate = currentDate.plusDays(1);
-                System.out.println("\n----------------------------------------------------------------------------------" +
-                        "\n>Upłynął kolejny dzień. Dzisiaj mamy " + currentDate + ".");
-
+                System.out.println(
+                                "\n----------------------------------------------------------------------------------" +
+                                "\n>Upłynął kolejny dzień. Dzisiaj mamy " + currentDate + ".");
 
             } else {
+                System.out.println("\nWszyscy gracze zakończyli rozgrywkę.\n");
                 gameRunning = false;
             }
         }
 
-        System.out.println("######################");
-        System.out.println("# DZIĘKUJEMY ZA GRĘ! #");
-        System.out.println("######################");
+        System.out.println("\t######################");
+        System.out.println("\t# DZIĘKUJEMY ZA GRĘ! #");
+        System.out.println("\t#       Autor:       #");
+        System.out.println("\t#  Piotr Cwikliński  #");
+        System.out.println("\t######################");
     }
 }

@@ -1,4 +1,6 @@
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
+import java.time.LocalDate;
 
 public class Project {
 
@@ -12,12 +14,16 @@ public class Project {
     public Integer prestaShopDays;
     public String client;
     public Integer deadlineDays;
+    public LocalDate deadlineDate;
     public Integer deadlinePenalty;
     public Integer price;
     public Integer paymentDays;
     public Integer complexityLvl;
     public boolean taken;
     public String owner;
+    public String status;
+    final static Integer initialProjectsNumber = 3;
+    public static Integer currentProjectsNumber;
 
     static Random rand = new Random();
 
@@ -37,8 +43,8 @@ public class Project {
     public Integer deadlineDaysMAX = 42;
     public Integer deadlinePenaltyPercentMAX = 50;
     public Integer priceMax = 200000;
-    public Integer paymentDaysMAX = 60;
-    public Integer[] complexityLvls = {1, 2, 3};
+    public Integer paymentDaysMAX = 30;
+    public static Integer[] complexityLvls = {1, 2, 3};
 
     // Generator nowych Projektów
 
@@ -50,6 +56,7 @@ public class Project {
         this.deadlinePenalty = rand.nextInt(deadlinePenaltyPercentMAX);
         this.paymentDays = rand.nextInt(paymentDaysMAX);
         this.taken = false;
+        this.status = "Nie rozpoczęty";
         if (this.complexityLvl == 1) {
             this.price = rand.nextInt(10000, priceMax - 150000);
             this.frontEndDays = rand.nextInt(0, frontEndDaysMAX);
@@ -78,25 +85,38 @@ public class Project {
 
     }
 
+    // Utworzenie bazy projektów oraz uzupełnienie początkowej puli dostępnych projektów
+
     public static Project[] projects = new Project[50];
 
     public static void generateStartProjects(int complexityLvl) {
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < initialProjectsNumber; i++) {
             projects[i] = new Project(complexityLvl);
             projects[i].projectID = i;
         }
+        currentProjectsNumber = initialProjectsNumber;
     }
 
+    //Dodawanie kolejnego projektu do bazy
+
+    public static void generateAdditionalProject(){
+        projects[currentProjectsNumber] = new Project(complexityLvls[rand.nextInt(complexityLvls.length)]);
+        projects[currentProjectsNumber].projectID = currentProjectsNumber;
+        currentProjectsNumber++;
+    }
+
+    // format wypisywania ogłoszeń
     public String toString() {
         return "----------------------------------------------------------------------------------\n" +
+                ">>DANE PROJEKTU:\n" +
                 "ID Ogłoszenia: (" + projectID + ");\n" +
                 "Nazwa Projektu: " + projectname + ";\n" +
                 "Ilość dni na realizację: " + deadlineDays + ";\n" +
                 "Kara za opóźnienie (% faktury): " + deadlinePenalty + "%;\n" +
                 "Wynagrodzenie: " + price + " zł;\n" +
                 "Termin płatności: " + paymentDays + " dni;\n" +
-                "WYMAGANE TECHNOLOGIE:\n" +
+                ">>WYMAGANE TECHNOLOGIE:\n" +
                 "front-End: " + frontEndDays + " dni;\n" +
                 "back-End: " + backEndDays + " dni;\n" +
                 "Bazy Danych: " + databaseDays + " dni;\n" +
@@ -113,6 +133,29 @@ public class Project {
             break;
             }
         }
+    }
+
+    // format wypisywania statusu posiadanych ogłoszeń
+    public String toString(boolean x) {
+        return "----------------------------------------------------------------------------------\n" +
+                ">>DANE PROJEKTU:\n" +
+                "ID Ogłoszenia: (" + projectID + ");\n" +
+                "Nazwa Projektu: " + projectname + ";\n" +
+                "Status Projektu: " + status + ";\n" +
+                "Wynagrodzenie: " + price + " zł;\n" +
+                "Kara za opóźnienie (% faktury): " + deadlinePenalty + "%;\n" +
+                "Termin płatności: " + paymentDays + " dni;\n" +
+                ">>ILOSC DNI POZOSTALYCH DO REALIZACJI:\n" +
+                "front-End: " + frontEndDays + " dni;\n" +
+                "back-End: " + backEndDays + " dni;\n" +
+                "Bazy Danych: " + databaseDays + " dni;\n" +
+                "Mobile: " + mobileDays + " dni;\n" +
+                "WordPress: " + wordpressDays + " dni;\n" +
+                "PrestaShop: " + prestaShopDays + " dni;\n" +
+                ">>TERMIN REALIZACJI:\n" +
+                "Deadline (data): " + deadlineDate + ";\n" +
+                "Pozostało dni: " + (ChronoUnit.DAYS.between(Main.currentDate, deadlineDate)) + ";\n"
+                ;
     }
 
 
