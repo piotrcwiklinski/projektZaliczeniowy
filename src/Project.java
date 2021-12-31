@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Project {
 
     public Integer projectID;
-    public String projectname;
+    public String projectName;
     public Integer frontEndDays;
     public Integer backEndDays;
     public Integer databaseDays;
@@ -19,9 +19,10 @@ public class Project {
     public Integer price;
     public Integer paymentDays;
     public Integer complexityLvl;
-    public boolean taken;
+    public Boolean taken;
     public String owner;
     public String status;
+    public Boolean fuckedUpCode;
     final static Integer initialProjectsNumber = 3;
     public static Integer currentProjectsNumber;
 
@@ -49,13 +50,14 @@ public class Project {
     // Generator nowych Projektów
 
     public Project(Integer complexityLvl) {
-        this.projectname = projectTypes[rand.nextInt(projectTypes.length)] + " " + projectNames[rand.nextInt(projectNames.length)];
+        this.projectName = projectTypes[rand.nextInt(projectTypes.length)] + " " + projectNames[rand.nextInt(projectNames.length)];
         this.complexityLvl = complexityLvl;
         this.client = clients[rand.nextInt(clients.length)];
         this.deadlineDays = rand.nextInt(7, deadlineDaysMAX);
         this.deadlinePenalty = rand.nextInt(deadlinePenaltyPercentMAX);
         this.paymentDays = rand.nextInt(paymentDaysMAX);
         this.taken = false;
+        this.fuckedUpCode = false;
         this.status = "Nie rozpoczęty";
         if (this.complexityLvl == 1) {
             this.price = rand.nextInt(10000, priceMax - 150000);
@@ -87,7 +89,7 @@ public class Project {
 
     // Utworzenie bazy projektów oraz uzupełnienie początkowej puli dostępnych projektów
 
-    public static Project[] projects = new Project[50];
+    public static Project[] projects = new Project[100];
 
     public static void generateStartProjects(int complexityLvl) {
 
@@ -111,12 +113,12 @@ public class Project {
         return "----------------------------------------------------------------------------------\n" +
                 ">>DANE PROJEKTU:\n" +
                 "ID Ogłoszenia: (" + projectID + ");\n" +
-                "Nazwa Projektu: " + projectname + ";\n" +
+                "Nazwa Projektu: " + projectName + ";\n" +
                 "Ilość dni na realizację: " + deadlineDays + ";\n" +
                 "Kara za opóźnienie (% faktury): " + deadlinePenalty + "%;\n" +
                 "Wynagrodzenie: " + price + " zł;\n" +
                 "Termin płatności: " + paymentDays + " dni;\n" +
-                ">>WYMAGANE TECHNOLOGIE:\n" +
+                "\n>>WYMAGANE TECHNOLOGIE:\n" +
                 "front-End: " + frontEndDays + " dni;\n" +
                 "back-End: " + backEndDays + " dni;\n" +
                 "Bazy Danych: " + databaseDays + " dni;\n" +
@@ -139,20 +141,20 @@ public class Project {
     public String toString(boolean x) {
         return "----------------------------------------------------------------------------------\n" +
                 ">>DANE PROJEKTU:\n" +
-                "ID Ogłoszenia: (" + projectID + ");\n" +
-                "Nazwa Projektu: " + projectname + ";\n" +
+                "ID Projektu: (" + projectID + ");\n" +
+                "Nazwa Projektu: " + projectName + ";\n" +
                 "Status Projektu: " + status + ";\n" +
                 "Wynagrodzenie: " + price + " zł;\n" +
                 "Kara za opóźnienie (% faktury): " + deadlinePenalty + "%;\n" +
                 "Termin płatności: " + paymentDays + " dni;\n" +
-                ">>ILOSC DNI POZOSTALYCH DO REALIZACJI:\n" +
+                "\n>>STATUS REALIZACJI:\n" +
                 "front-End: " + frontEndDays + " dni;\n" +
                 "back-End: " + backEndDays + " dni;\n" +
                 "Bazy Danych: " + databaseDays + " dni;\n" +
                 "Mobile: " + mobileDays + " dni;\n" +
                 "WordPress: " + wordpressDays + " dni;\n" +
                 "PrestaShop: " + prestaShopDays + " dni;\n" +
-                ">>TERMIN REALIZACJI:\n" +
+                "\n>>TERMIN ODDANIA:\n" +
                 "Deadline (data): " + deadlineDate + ";\n" +
                 "Pozostało dni: " + (ChronoUnit.DAYS.between(Main.currentDate, deadlineDate)) + ";\n"
                 ;

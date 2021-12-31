@@ -1,20 +1,9 @@
+import Employees.*;
+
 import java.util.Scanner;
 import java.time.LocalDate;
 
 public class Main {
-
-
-    public static boolean isNumeric(String input) {
-        if (input == null) {
-            return false;
-        }
-        try {
-            double i = Integer.parseInt(input);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
 
     //Obiekty Systemowe
     static Scanner in = new Scanner(System.in);
@@ -24,6 +13,8 @@ public class Main {
     public static boolean gameRunning = true;
     final static LocalDate startDate = LocalDate.parse("2020-01-01");
     public static LocalDate currentDate = startDate;
+    public static Integer currentEmployeeFindSpeed = 5;
+    public static Integer daysCounter = 0;
 
 
     public static void main(String[] args) {
@@ -53,6 +44,8 @@ public class Main {
         System.out.println("\nWszyscy gracze na pokładzie. Zaczynamy rozgrywkę!");
 
         Project.generateStartProjects(1);
+        Employee.empID = 0;
+        Coder.generateInitialEmpPool();
 
         //Główna pętla gry
 
@@ -71,9 +64,19 @@ public class Main {
             if (aliveChecker > 0) {
                 currentDate = currentDate.plusDays(1);
                 System.out.println(
-                                "\n----------------------------------------------------------------------------------" +
+                        "\n----------------------------------------------------------------------------------" +
                                 "\n>Upłynął kolejny dzień. Dzisiaj mamy " + currentDate + ".");
 
+
+                // Automatyczne generowanie nowych dostępnych Pracowników
+
+                daysCounter++;
+
+                if (daysCounter >= currentEmployeeFindSpeed) {
+                    Employee.generateRandomEmployee();
+                    System.out.println("\n>W bazie dostępnych Pracowników pojawił się nowy pracownik!");
+                    daysCounter = 0;
+                }
             } else {
                 System.out.println("\nWszyscy gracze zakończyli rozgrywkę.\n");
                 gameRunning = false;
@@ -81,9 +84,25 @@ public class Main {
         }
 
         System.out.println("\t######################");
-        System.out.println("\t# DZIĘKUJEMY ZA GRĘ! #");
+        System.out.println("\t#  DZIĘKUJĘ ZA GRĘ!  #");
         System.out.println("\t#       Autor:       #");
         System.out.println("\t#  Piotr Cwikliński  #");
         System.out.println("\t######################");
     }
+
+    // funkcja sprawdzająca czy podany argument jest liczbą
+
+    public static boolean isNumeric(String input) {
+        if (input == null) {
+            return false;
+        }
+        try {
+            double i = Integer.parseInt(input);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+
 }
