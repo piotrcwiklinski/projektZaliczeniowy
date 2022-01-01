@@ -14,6 +14,8 @@ public class SalesPerson extends Employee{
         this.isAssigned = false;
         this.salary = 2500.0;
         this.bonus = rand.nextDouble(2500.0);
+        this.sickChance = rand.nextInt(10);
+        this.workDayCounter = 0;
     }
 
     // format wypisywania danych o Sprzedawcach:

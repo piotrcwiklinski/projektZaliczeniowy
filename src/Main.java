@@ -13,7 +13,7 @@ public class Main {
     public static boolean gameRunning = true;
     final static LocalDate startDate = LocalDate.parse("2020-01-01");
     public static LocalDate currentDate = startDate;
-    public static Integer currentEmployeeFindSpeed = 5;
+    public static Integer currentEmployeeFindSpeed = 3;
     public static Integer daysCounter = 0;
 
 
@@ -44,7 +44,6 @@ public class Main {
         System.out.println("\nWszyscy gracze na pokładzie. Zaczynamy rozgrywkę!");
 
         Project.generateStartProjects(1);
-        Employee.empID = 0;
         Coder.generateInitialEmpPool();
 
         //Główna pętla gry
@@ -55,7 +54,7 @@ public class Main {
                 player.doTurn();
             }
 
-            Integer aliveChecker = 0;
+            int aliveChecker = 0;
             for (Player player : players)
                 if (player.alive) {
                     aliveChecker++;
@@ -65,7 +64,7 @@ public class Main {
                 currentDate = currentDate.plusDays(1);
                 System.out.println(
                         "\n----------------------------------------------------------------------------------" +
-                                "\n>Upłynął kolejny dzień. Dzisiaj mamy " + currentDate + ".");
+                                "\n>Upłynął kolejny dzień. Dzisiaj mamy " + currentDate.getDayOfWeek() + " ," + currentDate + ".");
 
 
                 // Automatyczne generowanie nowych dostępnych Pracowników

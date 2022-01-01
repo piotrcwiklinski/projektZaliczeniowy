@@ -18,11 +18,14 @@ public class Project {
     public Integer deadlinePenalty;
     public Integer price;
     public Integer paymentDays;
+    public LocalDate payDay;
     public Integer complexityLvl;
     public Boolean taken;
     public String owner;
     public String status;
     public Boolean fuckedUpCode;
+    public Boolean isOutsourced;
+    public Integer outsourcerId;
     final static Integer initialProjectsNumber = 3;
     public static Integer currentProjectsNumber;
 
@@ -58,6 +61,7 @@ public class Project {
         this.paymentDays = rand.nextInt(paymentDaysMAX);
         this.taken = false;
         this.fuckedUpCode = false;
+        this.isOutsourced = false;
         this.status = "Nie rozpoczęty";
         if (this.complexityLvl == 1) {
             this.price = rand.nextInt(10000, priceMax - 150000);
@@ -156,6 +160,19 @@ public class Project {
                 "PrestaShop: " + prestaShopDays + " dni;\n" +
                 "\n>>TERMIN ODDANIA:\n" +
                 "Deadline (data): " + deadlineDate + ";\n" +
+                "Pozostało dni: " + (ChronoUnit.DAYS.between(Main.currentDate, deadlineDate)) + ";\n"
+                ;
+    }
+
+    // SKRÓCONY format wypisywania statusu posiadanych ogłoszeń
+    public String toString(boolean x, boolean y) {
+        return "----------------------------------------------------------------------------------\n" +
+                ">>DANE PROJEKTU:\n" +
+                "ID Projektu: (" + projectID + ");\n" +
+                "Nazwa Projektu: " + projectName + ";" +
+                "\n>>STATUS REALIZACJI:\n" +
+                "front-End: " + frontEndDays + " dni; " + "back-End: " + backEndDays + " dni; " + "Bazy Danych: " + databaseDays + " dni; " + "Mobile: " + mobileDays + " dni; " + "WordPress: " + wordpressDays + " dni; " + "PrestaShop: " + prestaShopDays + " dni;" +
+                "\n>>TERMIN ODDANIA:\n" +
                 "Pozostało dni: " + (ChronoUnit.DAYS.between(Main.currentDate, deadlineDate)) + ";\n"
                 ;
     }

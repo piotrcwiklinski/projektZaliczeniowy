@@ -11,6 +11,7 @@ public class Tester extends Employee{
         this.empName = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
         this.isAssigned = false;
         this.salary = 3500.0;
+        this.sickChance = rand.nextInt(10);
     }
 
     // format wypisywania danych o Testerach:

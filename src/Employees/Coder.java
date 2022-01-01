@@ -4,6 +4,7 @@ public class Coder extends Employee{
 
     public Boolean isOutsourcer;
     public Integer projectPriceShareIfOutsourced;
+    public Integer projectIdIfOutsourced;
     public Integer lateChance;
     public Integer fuckUpChance;
     public Boolean frontEndSkill;
@@ -27,6 +28,7 @@ public class Coder extends Employee{
         this.mobileSkill = rand.nextBoolean();
         this.wordPressSkill = rand.nextBoolean();
         this.prestaShopSkill = rand.nextBoolean();
+        this.sickChance = rand.nextInt(10);
         double SalaryCalc = 0.0;
         if(this.frontEndSkill) SalaryCalc += 2500.0;
         if(this.backEndSkill) SalaryCalc += 2500.0;
@@ -50,6 +52,7 @@ public class Coder extends Employee{
         this.mobileSkill = rand.nextBoolean();
         this.wordPressSkill = rand.nextBoolean();
         this.prestaShopSkill = rand.nextBoolean();
+        this.sickChance = rand.nextInt(10);
     }
 
     // Utworzenie bazy Programistów oraz uzupełnienie początkowej puli dostępnych Programistów
