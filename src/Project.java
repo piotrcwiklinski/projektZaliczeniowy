@@ -16,14 +16,16 @@ public class Project {
     public Integer deadlineDays;
     public LocalDate deadlineDate;
     public Integer deadlinePenalty;
-    public Integer price;
+    public Double price;
     public Integer paymentDays;
     public LocalDate payDay;
+    public Double paySum;
     public Integer complexityLvl;
     public Boolean taken;
     public String owner;
     public String status;
     public Boolean fuckedUpCode;
+    public Integer fuckUpsCount;
     public Boolean isOutsourced;
     public Integer outsourcerId;
     final static Integer initialProjectsNumber = 3;
@@ -57,14 +59,15 @@ public class Project {
         this.complexityLvl = complexityLvl;
         this.client = clients[rand.nextInt(clients.length)];
         this.deadlineDays = rand.nextInt(7, deadlineDaysMAX);
-        this.deadlinePenalty = rand.nextInt(deadlinePenaltyPercentMAX);
-        this.paymentDays = rand.nextInt(paymentDaysMAX);
+        this.deadlinePenalty = rand.nextInt(1, deadlinePenaltyPercentMAX);
+        this.paymentDays = rand.nextInt(1, paymentDaysMAX);
         this.taken = false;
         this.fuckedUpCode = false;
+        this.fuckUpsCount = 0;
         this.isOutsourced = false;
         this.status = "Nie rozpoczęty";
         if (this.complexityLvl == 1) {
-            this.price = rand.nextInt(10000, priceMax - 150000);
+            this.price = rand.nextDouble(10000.0, priceMax - 150000.0);
             this.frontEndDays = rand.nextInt(0, frontEndDaysMAX);
             this.backEndDays = rand.nextInt(1, backEndDaysMAX);
             this.databaseDays = rand.nextInt(0, databaseDaysMAX);
@@ -72,7 +75,7 @@ public class Project {
             this.wordpressDays = 0;
             this.prestaShopDays = 0;
         } else if (this.complexityLvl == 2) {
-            this.price = rand.nextInt(25000, priceMax - 100000);
+            this.price = rand.nextDouble(25000.0, priceMax - 100000.0);
             this.frontEndDays = rand.nextInt(1, frontEndDaysMAX);
             this.backEndDays = rand.nextInt(1, backEndDaysMAX);
             this.databaseDays = rand.nextInt(0, databaseDaysMAX);
@@ -80,7 +83,7 @@ public class Project {
             this.wordpressDays = rand.nextInt(0, wordpressDaysMAX);
             this.prestaShopDays = rand.nextInt(0, prestaShopDaysMAX);
         } else {
-            this.price = rand.nextInt(50000, priceMax);
+            this.price = rand.nextDouble(50000.0, priceMax);
             this.frontEndDays = rand.nextInt(1, frontEndDaysMAX);
             this.backEndDays = rand.nextInt(1, backEndDaysMAX);
             this.databaseDays = rand.nextInt(1, databaseDaysMAX);

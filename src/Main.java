@@ -15,6 +15,7 @@ public class Main {
     public static LocalDate currentDate = startDate;
     public static Integer currentEmployeeFindSpeed = 3;
     public static Integer daysCounter = 0;
+    public static boolean newMonthFlag = false;
 
 
     public static void main(String[] args) {
@@ -63,8 +64,14 @@ public class Main {
             if (aliveChecker > 0) {
                 currentDate = currentDate.plusDays(1);
                 System.out.println(
-                        "\n----------------------------------------------------------------------------------" +
-                                "\n>Upłynął kolejny dzień. Dzisiaj mamy " + currentDate.getDayOfWeek() + " ," + currentDate + ".");
+                        "\n----------------------------------------------------------------------------------\n" +
+                                "\n>Upłynął kolejny dzień. Dzisiaj mamy " + currentDate.getDayOfWeek() + ", " + currentDate + ".");
+
+                if (currentDate.getMonth() != currentDate.minusDays(1).getMonth()) {
+
+                    System.out.println("\nRozpoczyna się nowy miesiąc: " + currentDate.getMonth() + ";");
+                    newMonthFlag = true;
+                } else newMonthFlag = false;
 
 
                 // Automatyczne generowanie nowych dostępnych Pracowników
