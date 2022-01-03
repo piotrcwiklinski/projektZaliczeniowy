@@ -28,17 +28,19 @@ public class Project {
     public Integer fuckUpsCount;
     public Boolean isOutsourced;
     public Integer outsourcerId;
+    public Boolean touchedByBoss;
+    public String whoObtained = "";
     final static Integer initialProjectsNumber = 3;
     public static Integer currentProjectsNumber;
 
     static Random rand = new Random();
+    double priceCalc;
 
 
     // Warunki regulujace zasady budowania nowych Projektów
 
     public String[] projectNames = {"PolexBud", "AssBook", "Stonka", "Mal_content", "Reptiliana", "Avatar", "Barnaba sp. z o.o.", "Computex", "KołpaK S.A.", "P.H.U. \"Kormoran\"", "ArtemidaRex", "DVD-Project",};
     public String[] projectTypes = {"Strona-wizytówka Firmy", "Społecznościowa Aplikacja mobilna", "Forum Internetowe", "Sklep Internetowy", "Projekt Bazodanowy", "Aplikacja Streamingowa", "Projekt Gamifikacji"};
-    public String[] skillNames = {"front-End", "back-End", "Bazy Danych", "Mobile", "Wordpress", "PrestaShop"};
     public Integer frontEndDaysMAX = 14;
     public Integer backEndDaysMAX = 21;
     public Integer databaseDaysMAX = 14;
@@ -48,7 +50,7 @@ public class Project {
     public String[] clients = {"Wyluzowany", "Wymagający", "SKRWL"};
     public Integer deadlineDaysMAX = 42;
     public Integer deadlinePenaltyPercentMAX = 50;
-    public Integer priceMax = 200000;
+    public Integer priceMax = 100000;
     public Integer paymentDaysMAX = 30;
     public static Integer[] complexityLvls = {1, 2, 3};
 
@@ -65,9 +67,11 @@ public class Project {
         this.fuckedUpCode = false;
         this.fuckUpsCount = 0;
         this.isOutsourced = false;
+        this.touchedByBoss = false;
         this.status = "Nie rozpoczęty";
         if (this.complexityLvl == 1) {
-            this.price = rand.nextDouble(10000.0, priceMax - 150000.0);
+            priceCalc = Math.round(rand.nextDouble(10000.0, priceMax - 75000.0));
+            this.price = priceCalc;
             this.frontEndDays = rand.nextInt(0, frontEndDaysMAX);
             this.backEndDays = rand.nextInt(1, backEndDaysMAX);
             this.databaseDays = rand.nextInt(0, databaseDaysMAX);
@@ -75,7 +79,8 @@ public class Project {
             this.wordpressDays = 0;
             this.prestaShopDays = 0;
         } else if (this.complexityLvl == 2) {
-            this.price = rand.nextDouble(25000.0, priceMax - 100000.0);
+            priceCalc = Math.round(rand.nextDouble(25000.0, priceMax - 50000.0));
+            this.price = priceCalc;
             this.frontEndDays = rand.nextInt(1, frontEndDaysMAX);
             this.backEndDays = rand.nextInt(1, backEndDaysMAX);
             this.databaseDays = rand.nextInt(0, databaseDaysMAX);
@@ -83,7 +88,8 @@ public class Project {
             this.wordpressDays = rand.nextInt(0, wordpressDaysMAX);
             this.prestaShopDays = rand.nextInt(0, prestaShopDaysMAX);
         } else {
-            this.price = rand.nextDouble(50000.0, priceMax);
+            priceCalc = Math.round(rand.nextDouble(50000.0, priceMax));
+            this.price = priceCalc;
             this.frontEndDays = rand.nextInt(1, frontEndDaysMAX);
             this.backEndDays = rand.nextInt(1, backEndDaysMAX);
             this.databaseDays = rand.nextInt(1, databaseDaysMAX);
@@ -146,6 +152,19 @@ public class Project {
 
     // format wypisywania statusu posiadanych ogłoszeń
     public String toString(boolean x) {
+
+        String finalLines;
+
+        if(status.equals("Zakończony")) {
+            finalLines = "\n>>DANE DOTYCZĄCE ZAPLATY:\n" +
+                        "Przewidywany termin zapłaty: " + payDay + ";\n" +
+                        "Przewidywana kwota zapłaty: " + paySum + ";\n";
+        } else {
+            finalLines = "\n>>TERMIN ODDANIA:\n" +
+                    "Deadline (data): " + deadlineDate + ";\n" +
+                    "Pozostało dni: " + (ChronoUnit.DAYS.between(Main.currentDate, deadlineDate)) + ";\n";
+        }
+
         return "----------------------------------------------------------------------------------\n" +
                 ">>DANE PROJEKTU:\n" +
                 "ID Projektu: (" + projectID + ");\n" +
@@ -161,18 +180,14 @@ public class Project {
                 "Mobile: " + mobileDays + " dni;\n" +
                 "WordPress: " + wordpressDays + " dni;\n" +
                 "PrestaShop: " + prestaShopDays + " dni;\n" +
-                "\n>>TERMIN ODDANIA:\n" +
-                "Deadline (data): " + deadlineDate + ";\n" +
-                "Pozostało dni: " + (ChronoUnit.DAYS.between(Main.currentDate, deadlineDate)) + ";\n"
+                finalLines
                 ;
     }
 
     // SKRÓCONY format wypisywania statusu posiadanych ogłoszeń
     public String toString(boolean x, boolean y) {
         return "----------------------------------------------------------------------------------\n" +
-                ">>DANE PROJEKTU:\n" +
-                "ID Projektu: (" + projectID + ");\n" +
-                "Nazwa Projektu: " + projectName + ";" +
+                "(" + projectID + ") " + projectName + ";" +
                 "\n>>STATUS REALIZACJI:\n" +
                 "front-End: " + frontEndDays + " dni; " + "back-End: " + backEndDays + " dni; " + "Bazy Danych: " + databaseDays + " dni; " + "Mobile: " + mobileDays + " dni; " + "WordPress: " + wordpressDays + " dni; " + "PrestaShop: " + prestaShopDays + " dni;" +
                 "\n>>TERMIN ODDANIA:\n" +

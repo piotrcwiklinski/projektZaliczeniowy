@@ -22,11 +22,11 @@ public class Employee {
     //generator nowych losowych Pracowników
 
     public static void generateRandomEmployee() {
-        if (rand.nextInt(100) < 75) {
+        if (rand.nextInt(100) < 50) {
             Coder.coders[empID] = new Coder();
             Coder.coders[empID].identifier = empID;
             empID++;
-        } else if (rand.nextInt(100) < 50) {
+        } else if (rand.nextInt(100) < 45) {
             Tester.testers[empID] = new Tester();
             Tester.testers[empID].identifier = empID;
             empID++;

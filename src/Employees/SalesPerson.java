@@ -13,7 +13,8 @@ public class SalesPerson extends Employee{
         this.empName = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
         this.isAssigned = false;
         this.salary = 2500.0;
-        this.bonus = rand.nextDouble(2500.0);
+        double bonusCalc = Math.round(rand.nextDouble(2500.0));
+        this.bonus = bonusCalc;
         this.sickChance = rand.nextInt(10);
         this.workDayCounter = 0;
     }

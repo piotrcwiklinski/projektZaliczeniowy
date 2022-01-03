@@ -36,7 +36,8 @@ public class Coder extends Employee{
         if(this.mobileSkill) SalaryCalc += 2500.0;
         if(this.wordPressSkill) SalaryCalc += 2500.0;
         if(this.prestaShopSkill) SalaryCalc += 2500.0;
-        SalaryCalc *= (1.0 - (this.lateChance / 100.0) - (this.fuckUpChance / 100.0));
+        SalaryCalc *= 1.0 - (this.lateChance / 100.0) - (this.fuckUpChance / 100.0);
+        SalaryCalc = Math.round(SalaryCalc);
         this.salary = SalaryCalc;
 
     }

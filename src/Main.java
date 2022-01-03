@@ -16,6 +16,7 @@ public class Main {
     public static Integer currentEmployeeFindSpeed = 3;
     public static Integer daysCounter = 0;
     public static boolean newMonthFlag = false;
+    public static String winnerName;
 
 
     public static void main(String[] args) {
@@ -46,22 +47,27 @@ public class Main {
 
         Project.generateStartProjects(1);
         Coder.generateInitialEmpPool();
+        Employee.generateRandomEmployee();
 
         //Główna pętla gry
 
-        GAME:
         while (gameRunning) {
             for (Player player : players) {
                 player.doTurn();
             }
 
             int aliveChecker = 0;
+            int winChecker = 0;
             for (Player player : players)
                 if (player.alive) {
                     aliveChecker++;
                 }
+            for (Player player : players)
+                if (player.winCondition) {
+                    winChecker++;
+                }
 
-            if (aliveChecker > 0) {
+            if (aliveChecker > 0 && winChecker == 0) {
                 currentDate = currentDate.plusDays(1);
                 System.out.println(
                         "\n----------------------------------------------------------------------------------\n" +
@@ -83,7 +89,14 @@ public class Main {
                     System.out.println("\n>W bazie dostępnych Pracowników pojawił się nowy pracownik!");
                     daysCounter = 0;
                 }
-            } else {
+
+            } else if (aliveChecker > 0 && winChecker > 0) {
+                System.out.println("\n\tW dzisiejszej rozgrywce zwycięża " + winnerName + "!!!");
+                System.out.println("\n\tGRATULACJE!!!");
+                gameRunning = false;
+            }
+
+            else {
                 System.out.println("\nWszyscy gracze zakończyli rozgrywkę.\n");
                 gameRunning = false;
             }
@@ -105,6 +118,7 @@ public class Main {
         try {
             double i = Integer.parseInt(input);
         } catch (NumberFormatException nfe) {
+
             return false;
         }
         return true;
