@@ -60,7 +60,6 @@ public class Project {
         this.projectName = projectTypes[rand.nextInt(projectTypes.length)] + " " + projectNames[rand.nextInt(projectNames.length)];
         this.complexityLvl = complexityLvl;
         this.client = clients[rand.nextInt(clients.length)];
-        this.deadlineDays = rand.nextInt(7, deadlineDaysMAX);
         this.deadlinePenalty = rand.nextInt(1, deadlinePenaltyPercentMAX);
         this.paymentDays = rand.nextInt(1, paymentDaysMAX);
         this.taken = false;
@@ -72,24 +71,27 @@ public class Project {
         if (this.complexityLvl == 1) {
             priceCalc = Math.round(rand.nextDouble(10000.0, priceMax - 75000.0));
             this.price = priceCalc;
-            this.frontEndDays = rand.nextInt(0, frontEndDaysMAX);
-            this.backEndDays = rand.nextInt(1, backEndDaysMAX);
-            this.databaseDays = rand.nextInt(0, databaseDaysMAX);
-            this.mobileDays = rand.nextInt(0, mobileDaysMAX);
+            this.deadlineDays = rand.nextInt(7, deadlineDaysMAX / 3);
+            this.frontEndDays = rand.nextInt(0, frontEndDaysMAX / 3);
+            this.backEndDays = rand.nextInt(1, backEndDaysMAX / 3);
+            this.databaseDays = rand.nextInt(0, databaseDaysMAX / 3);
+            this.mobileDays = rand.nextInt(0, mobileDaysMAX / 3);
             this.wordpressDays = 0;
             this.prestaShopDays = 0;
         } else if (this.complexityLvl == 2) {
             priceCalc = Math.round(rand.nextDouble(25000.0, priceMax - 50000.0));
             this.price = priceCalc;
-            this.frontEndDays = rand.nextInt(1, frontEndDaysMAX);
-            this.backEndDays = rand.nextInt(1, backEndDaysMAX);
-            this.databaseDays = rand.nextInt(0, databaseDaysMAX);
-            this.mobileDays = rand.nextInt(0, mobileDaysMAX);
-            this.wordpressDays = rand.nextInt(0, wordpressDaysMAX);
-            this.prestaShopDays = rand.nextInt(0, prestaShopDaysMAX);
+            this.deadlineDays = rand.nextInt(7, deadlineDaysMAX / 2);
+            this.frontEndDays = rand.nextInt(1, frontEndDaysMAX / 2);
+            this.backEndDays = rand.nextInt(1, backEndDaysMAX / 2);
+            this.databaseDays = rand.nextInt(0, databaseDaysMAX / 2);
+            this.mobileDays = rand.nextInt(0, mobileDaysMAX / 2);
+            this.wordpressDays = rand.nextInt(0, wordpressDaysMAX / 2);
+            this.prestaShopDays = rand.nextInt(0, prestaShopDaysMAX / 2);
         } else {
             priceCalc = Math.round(rand.nextDouble(50000.0, priceMax));
             this.price = priceCalc;
+            this.deadlineDays = rand.nextInt(7, deadlineDaysMAX);
             this.frontEndDays = rand.nextInt(1, frontEndDaysMAX);
             this.backEndDays = rand.nextInt(1, backEndDaysMAX);
             this.databaseDays = rand.nextInt(1, databaseDaysMAX);
@@ -123,10 +125,18 @@ public class Project {
 
     // format wypisywania ogłoszeń
     public String toString() {
+
+        String complexityLvlName = "";
+
+        if(complexityLvl.equals(1)) complexityLvlName = "łatwy";
+        else if (complexityLvl.equals(2)) complexityLvlName = "średni";
+        else if (complexityLvl.equals(3)) complexityLvlName = "trudny";
+
         return "----------------------------------------------------------------------------------\n" +
                 ">>DANE PROJEKTU:\n" +
                 "ID Ogłoszenia: (" + projectID + ");\n" +
                 "Nazwa Projektu: " + projectName + ";\n" +
+                "Poziom złożoności: " + complexityLvlName + ";\n" +
                 "Ilość dni na realizację: " + deadlineDays + ";\n" +
                 "Kara za opóźnienie (% faktury): " + deadlinePenalty + "%;\n" +
                 "Wynagrodzenie: " + price + " zł;\n" +
@@ -153,6 +163,12 @@ public class Project {
     // format wypisywania statusu posiadanych ogłoszeń
     public String toString(boolean x) {
 
+        String complexityLvlName = "";
+
+        if(complexityLvl.equals(1)) complexityLvlName = "łatwy";
+        else if (complexityLvl.equals(2)) complexityLvlName = "średni";
+        else if (complexityLvl.equals(3)) complexityLvlName = "trudny";
+
         String finalLines;
 
         if(status.equals("Zakończony")) {
@@ -169,6 +185,7 @@ public class Project {
                 ">>DANE PROJEKTU:\n" +
                 "ID Projektu: (" + projectID + ");\n" +
                 "Nazwa Projektu: " + projectName + ";\n" +
+                "Poziom złożoności: " + complexityLvlName + ";\n" +
                 "Status Projektu: " + status + ";\n" +
                 "Wynagrodzenie: " + price + " zł;\n" +
                 "Kara za opóźnienie (% faktury): " + deadlinePenalty + "%;\n" +

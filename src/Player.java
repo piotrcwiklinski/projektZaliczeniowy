@@ -87,8 +87,8 @@ public class Player {
                         System.out.println("\n>GRATULACJE! Otrzymałeś płatność za jeden z oddanych projektów: " + project.projectName + ";");
                         System.out.println(">Na Twoje konto bankowe wpłynęła właśnie kwota " + project.paySum + " zł;");
 
-                        if(project.paySum >= project.price && !project.touchedByBoss) this.winConditionProjectsClosed++;
-                        if(project.paySum >= project.price && !project.touchedByBoss && project.whoObtained.equals(this.name)) this.winCoditionProjectsClosedWithSalesPersonAssigned++;
+                        if(project.paySum >= project.price && project.complexityLvl.equals(3) && !project.touchedByBoss) this.winConditionProjectsClosed++;
+                        if(project.paySum >= project.price && project.complexityLvl.equals(3) && !project.touchedByBoss && project.whoObtained.equals(this.name)) this.winCoditionProjectsClosedWithSalesPersonAssigned++;
 
                     }
                 }

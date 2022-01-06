@@ -23,7 +23,15 @@ public class Main {
 
         //Początek rozgrywki
 
-        System.out.println("Witamy w grze \"Appstore\"!\n");
+        System.out.println("\nWitamy w grze \"Appstore\"!\n");
+
+        System.out.println("""                                                                  
+                >   *****     ********  ********  ********  ********  ********  ********  ******** <
+                >  **    **   **    **  **    **  **           **     **    **  **    **  **       <
+                > **********  ********  ********  ********     **     **    **  ********  ******** <
+                > **      **  **        **              **     **     **    **  **  **    **       <
+                > **      **  **        **        ********     **     ********  **   ***  ******** <
+                """);
 
         //Ustalenie liczby graczy
 
@@ -94,9 +102,7 @@ public class Main {
                 System.out.println("\n\tW dzisiejszej rozgrywce zwycięża " + winnerName + "!!!");
                 System.out.println("\n\tGRATULACJE!!!");
                 gameRunning = false;
-            }
-
-            else {
+            } else {
                 System.out.println("\nWszyscy gracze zakończyli rozgrywkę.\n");
                 gameRunning = false;
             }
