@@ -22,7 +22,7 @@ public class Employee {
     //generator nowych losowych Pracowników
 
     public static void generateRandomEmployee() {
-        if (rand.nextInt(100) < 60) {
+        if (rand.nextInt(100) < 70) {
             Coder.coders[empID] = new Coder();
             Coder.coders[empID].identifier = empID;
             empID++;

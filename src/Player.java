@@ -51,8 +51,8 @@ public class Player {
             System.out.println("\n\tWitaj " + this.name + "!");
 //NOWY MIESIĄC
             if (Main.newMonthFlag) {
-                System.out.println("----------------------------------------------------------------------------------");
-                System.out.println("\n\tZAMKNIĘCIE POPRZEDNIEGO MIESIĄCA:");
+                System.out.println("\n----------------------------------------------------------------------------------");
+                System.out.println("\tZAMKNIĘCIE POPRZEDNIEGO MIESIĄCA:");
                 if (this.taxSettlementDays < 2) {
                     System.out.println("\n>Nie poświęciłeś dość dni na rozliczenia w poprzednim miesiącu.");
                     System.out.println("\n>Urząd Skarbowy wjeżdża w Twoją firmę z siłą huraganu!");
@@ -63,9 +63,9 @@ public class Player {
                 if (this.cash < (this.incomeToBeTaxed * 0.1)) {
                     System.out.println("\n>Nie stać Cię aby opłacić podatek od sprzedaży (10% miesięcznego przychodu)..");
                 } else {
-                    System.out.println("\n>Regulujesz podatek od sprzedaży (10% miesięcznego przychodu) w wysokości: " + (this.incomeToBeTaxed * 0.1) + " zł;");
+                    System.out.println("\n>Regulujesz podatek od sprzedaży (10% miesięcznego przychodu) w wysokości: " + Math.round((this.incomeToBeTaxed * 0.1)) + " zł;");
                 }
-                this.cash -= (this.incomeToBeTaxed * 0.1);
+                this.cash -= Math.round((this.incomeToBeTaxed * 0.1));
                 this.incomeToBeTaxed = 0.0;
 
                 if (this.cash < this.monthlyCommitment) {
@@ -138,7 +138,7 @@ public class Player {
                                         Project.projects[Integer.parseInt(input)].taken = true;
                                         Project.projects[Integer.parseInt(input)].status = "W trakcie realizacji";
                                         Project.projects[Integer.parseInt(input)].deadlineDate = Main.currentDate.plusDays(Project.projects[Integer.parseInt(input)].deadlineDays);
-                                        System.out.println("Udało się pozyskać projekt nr. " + Integer.parseInt(input) + " do realizacji!");
+                                        System.out.println(">Udało się pozyskać projekt nr. " + Integer.parseInt(input) + " do realizacji!");
                                         actionChosen = true;
                                     } catch (Exception exc) {
                                         System.out.println("Nie ma takiego projektu! Spróbuj ponownie");
@@ -293,8 +293,13 @@ public class Player {
                                             Project.projects[tempProjectID].payDay = Main.currentDate.plusDays(Project.projects[tempProjectID].paymentDays);
                                             if ((ChronoUnit.DAYS.between(Main.currentDate, Project.projects[tempProjectID].deadlineDate)) >= 0) {
                                                 Project.projects[tempProjectID].paySum = Project.projects[tempProjectID].price;
+                                                System.out.println("\n>Projekt, który oddajesz, udało Ci się zrealizować w terminie;");
                                             } else {
-                                                Project.projects[tempProjectID].paySum = (Project.projects[tempProjectID].price) * (1.0 - (Project.projects[tempProjectID].deadlinePenalty / 100.0));
+                                                double projectPrice;
+                                                projectPrice = (Project.projects[tempProjectID].price) * (1.0 - (Project.projects[tempProjectID].deadlinePenalty / 100.0));
+                                                projectPrice = Math.round(projectPrice);
+                                                Project.projects[tempProjectID].paySum = projectPrice;
+                                                System.out.println("\n>Projekt, który oddajesz, został zrealizowany po terminie...;");
                                             }
 
                                             switch (Project.projects[tempProjectID].client) {
@@ -321,7 +326,7 @@ public class Player {
                                                     }
                                                 }
                                                 case "SKRWL" -> {
-                                                    System.out.println("\n>Oddajesz projekt Klientowi, który okazał się całkiem nieprzyjemnym gościem...");
+                                                    System.out.println("\n>Oddajesz projekt Klientowi, który okazał się całkiem nieprzyjemnym gościem (niezły SQRWL)...");
                                                     if (Project.projects[tempProjectID].fuckedUpCode) {
                                                         Project.projects[tempProjectID].payDay = null;
                                                         Project.projects[tempProjectID].paySum = 0.0;
@@ -731,6 +736,22 @@ public class Player {
         }
     }
 
+    //wyliczenie liczby obecnie posiadanych aktywnych projektów
+
+    public int countOwnedActiveProjects() {
+
+        int counter = 0;
+
+        for (Project project : Project.projects) {
+            while (project != null) {
+                if (project.taken && project.owner.equals(this.name) && project.status.equals("W trakcie realizacji"))
+                    counter++;
+                break;
+            }
+        }
+        return counter;
+    }
+
     //wypisanie wszystkich zatrudnionych Programistów (oprócz Podwykonawców!)
 
     public void printHiredCoders() {
@@ -811,83 +832,147 @@ public class Player {
         for (Coder coder : Coder.coders) {
             while (coder != null) {
 
+                //Zmienne potrzebne do drukowania skillset'u programisty
+
+                String fe, be, bd, mo, wp, ps;
+
+                if(coder.frontEndSkill) {fe = ">front-End; ";} else {fe = "";}
+                if(coder.backEndSkill) {be = ">back-End; ";} else {be = "";}
+                if(coder.dataBaseSkill) {bd = ">Bazy Danych; ";} else {bd = "";}
+                if(coder.mobileSkill) {mo = ">Mobile; ";} else {mo = "";}
+                if(coder.wordPressSkill) {wp = ">WordPress; ";} else {wp = "";}
+                if(coder.prestaShopSkill) {ps = ">PrestaShop; ";} else {ps = "";}
+
                 //Zwykli Koderzy na Umowie o Prace
 
                 if (coder.isAssigned && coder.employerName.equals(this.name) && !coder.isOutsourcer) {
+
+                    boolean jobsDone = false;
+
                     if (rand.nextInt(100) < coder.sickChance) {
                         System.out.println("\n>" + coder.empName + " nie pojawił się dziś w pracy - L4.\n");
                     } else {
-                        System.out.println("\t\nKtórym Projektem ma zająć się dziś " + coder.empName + "? (Podaj ID projektu)");
+                        CHOICE:
+                        while (!jobsDone) {
+                            if (countOwnedActiveProjects() != (0)) {
+                                System.out.println("\t\nKtórym Projektem ma zająć się dziś " + coder.empName + "? //SKILLE: " + fe + be + bd + mo + wp + ps + "// (Podaj ID projektu)");
 
-                        printOwnedActiveProjectsShort(x, y);
+                                printOwnedActiveProjectsShort(x, y);
 
-                        String input = in.nextLine();
+                                String input = in.nextLine();
 
-                        if (Main.isNumeric(input)) {
-                            int tempProjectID = Integer.parseInt(input);
-                            boolean jobsDone = false;
-                            if (Project.projects[tempProjectID].owner.equals(this.name) && Project.projects[tempProjectID].status.equals("W trakcie realizacji")) {
-                                while (!jobsDone) {
-                                    if (Project.projects[tempProjectID].frontEndDays > 0 && coder.frontEndSkill) {
-                                        Project.projects[tempProjectID].frontEndDays--;
-                                        if (rand.nextInt(100) < coder.fuckUpChance) {
-                                            Project.projects[tempProjectID].fuckedUpCode = true;
-                                            Project.projects[tempProjectID].fuckUpsCount++;
+                                if (Main.isNumeric(input)) {
+                                    int tempProjectID = Integer.parseInt(input);
+
+                                    try {
+                                        if (Project.projects[tempProjectID].owner.equals(this.name) && Project.projects[tempProjectID].status.equals("W trakcie realizacji")) {
+                                            while (!jobsDone) {
+                                                if (Project.projects[tempProjectID].frontEndDays > 0 && coder.frontEndSkill) {
+                                                    System.out.println("\n> " + coder.empName + " robił dziś front-End w ramach projektu o ID (" + tempProjectID + ")...\n");
+                                                    if (rand.nextInt(100) < coder.lateChance) {
+                                                        System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                                    } else {
+                                                        System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                                        Project.projects[tempProjectID].frontEndDays--;
+                                                        if (rand.nextInt(100) < coder.fuckUpChance) {
+                                                            Project.projects[tempProjectID].fuckedUpCode = true;
+                                                            Project.projects[tempProjectID].fuckUpsCount++;
+                                                        }
+                                                    }
+                                                    jobsDone = true;
+
+                                                } else if (Project.projects[tempProjectID].backEndDays > 0 && coder.backEndSkill) {
+                                                    System.out.println("\n> " + coder.empName + " robił dziś Back-End w ramach projektu o ID (" + tempProjectID + ")...\n");
+                                                    if (rand.nextInt(100) < coder.lateChance) {
+                                                        System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                                    } else {
+                                                        System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                                        Project.projects[tempProjectID].backEndDays--;
+                                                        if (rand.nextInt(100) < coder.fuckUpChance) {
+                                                            Project.projects[tempProjectID].fuckedUpCode = true;
+                                                            Project.projects[tempProjectID].fuckUpsCount++;
+                                                        }
+                                                    }
+                                                    jobsDone = true;
+
+                                                } else if (Project.projects[tempProjectID].databaseDays > 0 && coder.dataBaseSkill) {
+                                                    System.out.println("\n> " + coder.empName + " robił dziś Bazy Danych w ramach projektu o ID (" + tempProjectID + ")...\n");
+                                                    if (rand.nextInt(100) < coder.lateChance) {
+                                                        System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                                    } else {
+                                                        System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                                        Project.projects[tempProjectID].databaseDays--;
+                                                        if (rand.nextInt(100) < coder.fuckUpChance) {
+                                                            Project.projects[tempProjectID].fuckedUpCode = true;
+                                                            Project.projects[tempProjectID].fuckUpsCount++;
+                                                        }
+                                                    }
+                                                    jobsDone = true;
+
+                                                } else if (Project.projects[tempProjectID].mobileDays > 0 && coder.mobileSkill) {
+                                                    System.out.println("\n> " + coder.empName + " robił dziś Mobile w ramach projektu o ID (" + tempProjectID + ")...\n");
+                                                    if (rand.nextInt(100) < coder.lateChance) {
+                                                        System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                                    } else {
+                                                        System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                                        Project.projects[tempProjectID].mobileDays--;
+                                                        if (rand.nextInt(100) < coder.fuckUpChance) {
+                                                            Project.projects[tempProjectID].fuckedUpCode = true;
+                                                            Project.projects[tempProjectID].fuckUpsCount++;
+                                                        }
+                                                    }
+                                                    jobsDone = true;
+
+                                                } else if (Project.projects[tempProjectID].wordpressDays > 0 && coder.wordPressSkill) {
+                                                    System.out.println("\n> " + coder.empName + " robił dziś WordPressa w ramach projektu o ID (" + tempProjectID + ")...\n");
+                                                    if (rand.nextInt(100) < coder.lateChance) {
+                                                        System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                                    } else {
+                                                        System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                                        Project.projects[tempProjectID].wordpressDays--;
+                                                        if (rand.nextInt(100) < coder.fuckUpChance) {
+                                                            Project.projects[tempProjectID].fuckedUpCode = true;
+                                                            Project.projects[tempProjectID].fuckUpsCount++;
+                                                        }
+                                                    }
+                                                    jobsDone = true;
+
+                                                } else if (Project.projects[tempProjectID].prestaShopDays > 0 && coder.prestaShopSkill) {
+                                                    System.out.println("\n> " + coder.empName + " robił dziś PrestaShop w ramach projektu o ID (" + tempProjectID + ")...\n");
+                                                    if (rand.nextInt(100) < coder.lateChance) {
+                                                        System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                                    } else {
+                                                        System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                                        Project.projects[tempProjectID].prestaShopDays--;
+                                                        if (rand.nextInt(100) < coder.fuckUpChance) {
+                                                            Project.projects[tempProjectID].fuckedUpCode = true;
+                                                            Project.projects[tempProjectID].fuckUpsCount++;
+                                                        }
+                                                    }
+                                                    jobsDone = true;
+
+                                                } else {
+                                                    System.out.println("\n>" + coder.empName + " przy tym projekcie nie jest w stanie wykonać niczego sensownego...");
+                                                    jobsDone = true;
+                                                }
+                                            }
+
+                                        } else {
+                                            System.out.println(">Podany numer ID projektu nie należy do Ciebie bądź jest już zamknięty! Spróbuj ponownie;");
+                                            continue CHOICE;
                                         }
-                                        System.out.println("\n>" + coder.empName + " robił dziś front-End w ramach projektu o ID (" + tempProjectID + ");\n");
-                                        jobsDone = true;
-                                    } else if (Project.projects[tempProjectID].backEndDays > 0 && coder.backEndSkill) {
-                                        Project.projects[tempProjectID].backEndDays--;
-                                        if (rand.nextInt(100) < coder.fuckUpChance) {
-                                            Project.projects[tempProjectID].fuckedUpCode = true;
-                                            Project.projects[tempProjectID].fuckUpsCount++;
-                                        }
-                                        System.out.println("\n>" + coder.empName + " robił dziś Back-End w ramach projektu o ID (" + tempProjectID + ");\n");
-                                        jobsDone = true;
-                                    } else if (Project.projects[tempProjectID].databaseDays > 0 && coder.dataBaseSkill) {
-                                        Project.projects[tempProjectID].databaseDays--;
-                                        if (rand.nextInt(100) < coder.fuckUpChance) {
-                                            Project.projects[tempProjectID].fuckedUpCode = true;
-                                            Project.projects[tempProjectID].fuckUpsCount++;
-                                        }
-                                        System.out.println("\n>" + coder.empName + " robił dziś Bazy Danych w ramach projektu o ID (" + tempProjectID + ");\n");
-                                        jobsDone = true;
-                                    } else if (Project.projects[tempProjectID].mobileDays > 0 && coder.mobileSkill) {
-                                        Project.projects[tempProjectID].mobileDays--;
-                                        if (rand.nextInt(100) < coder.fuckUpChance) {
-                                            Project.projects[tempProjectID].fuckedUpCode = true;
-                                            Project.projects[tempProjectID].fuckUpsCount++;
-                                        }
-                                        System.out.println("\n>" + coder.empName + " robił dziś Mobile w ramach projektu o ID (" + tempProjectID + ");\n");
-                                        jobsDone = true;
-                                    } else if (Project.projects[tempProjectID].wordpressDays > 0 && coder.wordPressSkill) {
-                                        Project.projects[tempProjectID].wordpressDays--;
-                                        if (rand.nextInt(100) < coder.fuckUpChance) {
-                                            Project.projects[tempProjectID].fuckedUpCode = true;
-                                            Project.projects[tempProjectID].fuckUpsCount++;
-                                        }
-                                        System.out.println("\n>" + coder.empName + " robił dziś WordPressa w ramach projektu o ID (" + tempProjectID + ");\n");
-                                        jobsDone = true;
-                                    } else if (Project.projects[tempProjectID].prestaShopDays > 0 && coder.prestaShopSkill) {
-                                        Project.projects[tempProjectID].prestaShopDays--;
-                                        if (rand.nextInt(100) < coder.fuckUpChance) {
-                                            Project.projects[tempProjectID].fuckedUpCode = true;
-                                            Project.projects[tempProjectID].fuckUpsCount++;
-                                        }
-                                        System.out.println("\n>" + coder.empName + " robił dziś PrestaShop w ramach projektu o ID (" + tempProjectID + ");\n");
-                                        jobsDone = true;
-                                    } else {
-                                        System.out.println("\n>" + coder.empName + " przy tym projekcie nie jest w stanie wykonać niczego sensownego...");
-                                        jobsDone = true;
+                                    } catch (NullPointerException npe) {
+                                        System.out.println(">Podany numer ID projektu nie należy do nikogo! Spróbuj ponownie;");
+                                        continue CHOICE;
                                     }
+                                } else {
+                                    System.out.println("Numer ID projektu musi mieć postać numeryczną! Spróbuj ponownie;");
+                                    continue CHOICE;
                                 }
-
                             } else {
-                                System.out.println(">Podany numer ID projektu nie należy do Ciebie bądź jest już zamknięty! Spróbuj ponownie");
+                                System.out.println("\n>" + coder.empName + " nie ma dziś czym się zająć, gdyż nie posiadasz projektów w trakcie realizacji...\n");
+                                jobsDone = true;
                             }
-
-                        } else {
-                            System.out.println("Numer ID projektu musi mieć postać numeryczną!");
                         }
                     }
                     //Podwykonawcy
@@ -900,53 +985,89 @@ public class Player {
 
                         while (!jobsDone) {
                             if (Project.projects[coder.projectIdIfOutsourced].frontEndDays > 0 && coder.frontEndSkill) {
-                                Project.projects[coder.projectIdIfOutsourced].frontEndDays--;
-                                if (rand.nextInt(100) < coder.fuckUpChance) {
-                                    Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
-                                    Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                System.out.println("\n> " + coder.empName + " robił dziś front-End w ramach projektu o ID (" + coder.projectIdIfOutsourced + ")...");
+                                if (rand.nextInt(100) < coder.lateChance) {
+                                    System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                } else {
+                                    System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                    Project.projects[coder.projectIdIfOutsourced].frontEndDays--;
+                                    if (rand.nextInt(100) < coder.fuckUpChance) {
+                                        Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
+                                        Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                    }
                                 }
-                                System.out.println("\n>" + coder.empName + " robił dziś front-End w ramach projektu o ID (" + coder.projectIdIfOutsourced + ");\n");
                                 jobsDone = true;
+
                             } else if (Project.projects[coder.projectIdIfOutsourced].backEndDays > 0 && coder.backEndSkill) {
-                                Project.projects[coder.projectIdIfOutsourced].backEndDays--;
-                                if (rand.nextInt(100) < coder.fuckUpChance) {
-                                    Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
-                                    Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                System.out.println("\n> " + coder.empName + " robił dziś Back-End w ramach projektu o ID (" + coder.projectIdIfOutsourced + ")...");
+                                if (rand.nextInt(100) < coder.lateChance) {
+                                    System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                } else {
+                                    System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                    Project.projects[coder.projectIdIfOutsourced].backEndDays--;
+                                    if (rand.nextInt(100) < coder.fuckUpChance) {
+                                        Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
+                                        Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                    }
                                 }
-                                System.out.println("\n>" + coder.empName + " robił dziś Back-End w ramach projektu o ID (" + coder.projectIdIfOutsourced + ");\n");
                                 jobsDone = true;
+
                             } else if (Project.projects[coder.projectIdIfOutsourced].databaseDays > 0 && coder.dataBaseSkill) {
-                                Project.projects[coder.projectIdIfOutsourced].databaseDays--;
-                                if (rand.nextInt(100) < coder.fuckUpChance) {
-                                    Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
-                                    Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                System.out.println("\n> " + coder.empName + " robił dziś Bazy Danych w ramach projektu o ID (" + coder.projectIdIfOutsourced + ")...\n");
+                                if (rand.nextInt(100) < coder.lateChance) {
+                                    System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                } else {
+                                    System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                    Project.projects[coder.projectIdIfOutsourced].databaseDays--;
+                                    if (rand.nextInt(100) < coder.fuckUpChance) {
+                                        Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
+                                        Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                    }
                                 }
-                                System.out.println("\n>" + coder.empName + " robił dziś Bazy Danych w ramach projektu o ID (" + coder.projectIdIfOutsourced + ");\n");
                                 jobsDone = true;
+
                             } else if (Project.projects[coder.projectIdIfOutsourced].mobileDays > 0 && coder.mobileSkill) {
-                                Project.projects[coder.projectIdIfOutsourced].mobileDays--;
-                                if (rand.nextInt(100) < coder.fuckUpChance) {
-                                    Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
-                                    Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                System.out.println("\n> " + coder.empName + " robił dziś Mobile w ramach projektu o ID (" + coder.projectIdIfOutsourced + ")...\n");
+                                if (rand.nextInt(100) < coder.lateChance) {
+                                    System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                } else {
+                                    System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                    Project.projects[coder.projectIdIfOutsourced].mobileDays--;
+                                    if (rand.nextInt(100) < coder.fuckUpChance) {
+                                        Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
+                                        Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                    }
                                 }
-                                System.out.println("\n>" + coder.empName + " robił dziś Mobile w ramach projektu o ID (" + coder.projectIdIfOutsourced + ");\n");
                                 jobsDone = true;
+
                             } else if (Project.projects[coder.projectIdIfOutsourced].wordpressDays > 0 && coder.wordPressSkill) {
-                                Project.projects[coder.projectIdIfOutsourced].wordpressDays--;
-                                if (rand.nextInt(100) < coder.fuckUpChance) {
-                                    Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
-                                    Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                System.out.println("\n> " + coder.empName + " robił dziś WordPressa w ramach projektu o ID (" + coder.projectIdIfOutsourced + ")...\n");
+                                if (rand.nextInt(100) < coder.lateChance) {
+                                    System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                } else {
+                                    System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                    Project.projects[coder.projectIdIfOutsourced].wordpressDays--;
+                                    if (rand.nextInt(100) < coder.fuckUpChance) {
+                                        Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
+                                        Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                    }
                                 }
-                                System.out.println("\n>" + coder.empName + " robił dziś WordPressa w ramach projektu o ID (" + coder.projectIdIfOutsourced + ");\n");
                                 jobsDone = true;
+
                             } else if (Project.projects[coder.projectIdIfOutsourced].prestaShopDays > 0 && coder.prestaShopSkill) {
-                                Project.projects[coder.projectIdIfOutsourced].prestaShopDays--;
-                                if (rand.nextInt(100) < coder.fuckUpChance) {
-                                    Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
-                                    Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                System.out.println("\n> " + coder.empName + " robił dziś PrestaShop w ramach projektu o ID (" + coder.projectIdIfOutsourced + ")...\n");
+                                if (rand.nextInt(100) < coder.lateChance) {
+                                    System.out.println(">...niestety nie udało mu się wyrobić na czas z założonym na dzisiejszy dzień zadaniem...\n");
+                                } else {
+                                    System.out.println(">...i udało mu się zrealizować założone na dzisiaj zadania w terminie!\n");
+                                    Project.projects[coder.projectIdIfOutsourced].prestaShopDays--;
+                                    if (rand.nextInt(100) < coder.fuckUpChance) {
+                                        Project.projects[coder.projectIdIfOutsourced].fuckedUpCode = true;
+                                        Project.projects[coder.projectIdIfOutsourced].fuckUpsCount++;
+                                    }
                                 }
-                                System.out.println("\n>" + coder.empName + " robił dziś PrestaShop w ramach projektu o ID (" + coder.projectIdIfOutsourced + ");\n");
                                 jobsDone = true;
+
                             } else {
                                 System.out.println("\n>" + coder.empName + " przy tym projekcie nie jest w stanie wykonać niczego sensownego...");
                                 jobsDone = true;
