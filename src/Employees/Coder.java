@@ -3,7 +3,7 @@ package Employees;
 public class Coder extends Employee{
 
     public Boolean isOutsourcer;
-    public Integer projectPriceShareIfOutsourced;
+    public Double dailyWage;
     public Integer projectIdIfOutsourced;
     public Integer lateChance;
     public Integer fuckUpChance;
@@ -19,7 +19,6 @@ public class Coder extends Employee{
         this.empName = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
         this.isAssigned = false;
         this.isOutsourcer = false;
-        this.projectPriceShareIfOutsourced = 0;
         this.lateChance = rand.nextInt(30);
         this.fuckUpChance = rand.nextInt(30);
         this.frontEndSkill = rand.nextBoolean();
@@ -30,12 +29,12 @@ public class Coder extends Employee{
         this.prestaShopSkill = rand.nextBoolean();
         this.sickChance = rand.nextInt(10);
         double SalaryCalc = 0.0;
-        if(this.frontEndSkill) SalaryCalc += 2500.0;
-        if(this.backEndSkill) SalaryCalc += 2500.0;
+        if(this.frontEndSkill) SalaryCalc += 2000.0;
+        if(this.backEndSkill) SalaryCalc += 3000.0;
         if(this.dataBaseSkill) SalaryCalc += 2500.0;
-        if(this.mobileSkill) SalaryCalc += 2500.0;
-        if(this.wordPressSkill) SalaryCalc += 2500.0;
-        if(this.prestaShopSkill) SalaryCalc += 2500.0;
+        if(this.mobileSkill) SalaryCalc += 3000.0;
+        if(this.wordPressSkill) SalaryCalc += 2000.0;
+        if(this.prestaShopSkill) SalaryCalc += 2000.0;
         SalaryCalc *= 1.0 - (this.lateChance / 100.0) - (this.fuckUpChance / 100.0);
         SalaryCalc = Math.round(SalaryCalc);
         this.salary = SalaryCalc;
@@ -63,21 +62,21 @@ public class Coder extends Employee{
     public static void generateInitialEmpPool(){
         coders[empID] = new Coder(true);
         coders[empID].identifier = empID;
-        coders[empID].projectPriceShareIfOutsourced = 75;
+        coders[empID].dailyWage = 750.0;
         coders[empID].lateChance = 0;
         coders[empID].fuckUpChance = 0;
         empID++;
 
         coders[empID] = new Coder(true);
         coders[empID].identifier = empID;
-        coders[empID].projectPriceShareIfOutsourced = 60;
+        coders[empID].dailyWage = 600.0;
         coders[empID].lateChance = 0;
         coders[empID].fuckUpChance = 10;
         empID++;
 
         coders[empID] = new Coder(true);
         coders[empID].identifier = empID;
-        coders[empID].projectPriceShareIfOutsourced = 45;
+        coders[empID].dailyWage = 450.0;
         coders[empID].lateChance = 20;
         coders[empID].fuckUpChance = 20;
         empID++;
@@ -87,7 +86,7 @@ public class Coder extends Employee{
 
     public String toString() {
         String s, z, fe, be, bd, mo, wp, ps;
-        if(isOutsourcer){s = "Outsourcing"; z = projectPriceShareIfOutsourced + "% wartości realizowanego zlecenia;";} else{s = "Stały Pracownik"; z = "Miesięczna pensja " + salary + " zł brutto;";}
+        if(isOutsourcer){s = "Podwykonawca"; z = dailyWage + " zł brutto / dzień pracy;";} else{s = "Stały Pracownik"; z = "Miesięczna pensja " + salary + " zł brutto;";}
         if(frontEndSkill) {fe = ">front-End;\n";} else {fe = "";}
         if(backEndSkill) {be = ">back-End;\n";} else {be = "";}
         if(dataBaseSkill) {bd = ">Bazy Danych;\n";} else {bd = "";}

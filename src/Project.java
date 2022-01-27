@@ -27,9 +27,9 @@ public class Project {
     public Boolean fuckedUpCode;
     public Integer fuckUpsCount;
     public Boolean isOutsourced;
-    public Integer outsourcerId;
     public Boolean touchedByBoss;
     public String whoObtained = "";
+    public Boolean downpaymentTaken;
     final static Integer initialProjectsNumber = 3;
     public static Integer currentProjectsNumber;
 
@@ -39,7 +39,7 @@ public class Project {
 
     // Warunki regulujace zasady budowania nowych Projektów
 
-    public String[] projectNames = {"PolexBud", "AssBook", "Stonka", "Mal_content", "Reptiliana", "Avatar", "Barnaba sp. z o.o.", "Computex", "KołpaK S.A.", "P.H.U. \"Kormoran\"", "ArtemidaRex", "DVD-Project",};
+    public String[] projectNames = {"PolexBud", "AssBook", "Stonka", "Mal_content", "Reptiliana", "Avatar", "Barnaba sp. z o.o.", "Computex", "KołpaK S.A.", "P.H.U. \"Kormoran\"", "ArtemidaRex", "DVD-Project", "Cezex", "CarMazyn", "WhatR_Gate", "Empiq", "Q-Lek", "StarMach"};
     public String[] projectTypes = {"Strona-wizytówka Firmy", "Społecznościowa Aplikacja mobilna", "Forum Internetowe", "Sklep Internetowy", "Projekt Bazodanowy", "Aplikacja Streamingowa", "Projekt Gamifikacji"};
     public Integer frontEndDaysMAX = 14;
     public Integer backEndDaysMAX = 21;
@@ -50,7 +50,7 @@ public class Project {
     public String[] clients = {"Wyluzowany", "Wymagający", "SKRWL"};
     public Integer deadlineDaysMAX = 42;
     public Integer deadlinePenaltyPercentMAX = 50;
-    public Integer priceMax = 100000;
+    public Double priceMax = 75000.0;
     public Integer paymentDaysMAX = 30;
     public static Integer[] complexityLvls = {1, 2, 3};
 
@@ -67,37 +67,38 @@ public class Project {
         this.fuckUpsCount = 0;
         this.isOutsourced = false;
         this.touchedByBoss = false;
+        this.downpaymentTaken = false;
         this.status = "Nie rozpoczęty";
         if (this.complexityLvl == 1) {
-            priceCalc = Math.round(rand.nextDouble(10000.0, priceMax - 75000.0));
+            priceCalc = Math.round(rand.nextDouble(7000.0, priceMax - 60000.0));
             this.price = priceCalc;
             this.deadlineDays = rand.nextInt(7, deadlineDaysMAX / 3);
-            this.frontEndDays = rand.nextInt(0, frontEndDaysMAX / 3);
-            this.backEndDays = rand.nextInt(1, backEndDaysMAX / 3);
+            this.frontEndDays = rand.nextInt(1, frontEndDaysMAX / 3);
+            this.backEndDays = rand.nextInt(0, backEndDaysMAX / 3);
             this.databaseDays = rand.nextInt(0, databaseDaysMAX / 3);
             this.mobileDays = rand.nextInt(0, mobileDaysMAX / 3);
             this.wordpressDays = 0;
             this.prestaShopDays = 0;
         } else if (this.complexityLvl == 2) {
-            priceCalc = Math.round(rand.nextDouble(25000.0, priceMax - 50000.0));
+            priceCalc = Math.round(rand.nextDouble(15000.0, priceMax - 45000.0));
             this.price = priceCalc;
             this.deadlineDays = rand.nextInt(7, deadlineDaysMAX / 2);
             this.frontEndDays = rand.nextInt(1, frontEndDaysMAX / 2);
             this.backEndDays = rand.nextInt(1, backEndDaysMAX / 2);
-            this.databaseDays = rand.nextInt(0, databaseDaysMAX / 2);
+            this.databaseDays = rand.nextInt(1, databaseDaysMAX / 2);
             this.mobileDays = rand.nextInt(0, mobileDaysMAX / 2);
             this.wordpressDays = rand.nextInt(0, wordpressDaysMAX / 2);
             this.prestaShopDays = rand.nextInt(0, prestaShopDaysMAX / 2);
         } else {
-            priceCalc = Math.round(rand.nextDouble(50000.0, priceMax));
+            priceCalc = Math.round(rand.nextDouble(30000.0, priceMax));
             this.price = priceCalc;
             this.deadlineDays = rand.nextInt(7, deadlineDaysMAX);
             this.frontEndDays = rand.nextInt(1, frontEndDaysMAX);
             this.backEndDays = rand.nextInt(1, backEndDaysMAX);
             this.databaseDays = rand.nextInt(1, databaseDaysMAX);
-            this.mobileDays = rand.nextInt(0, mobileDaysMAX);
-            this.wordpressDays = rand.nextInt(0, wordpressDaysMAX);
-            this.prestaShopDays = rand.nextInt(0, prestaShopDaysMAX);
+            this.mobileDays = rand.nextInt(1, mobileDaysMAX);
+            this.wordpressDays = rand.nextInt(1, wordpressDaysMAX);
+            this.prestaShopDays = rand.nextInt(1, prestaShopDaysMAX);
         }
 
     }
